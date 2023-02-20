@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <script>
-       
-    window.onload = function()
-    {
-        
-        var htmlCanvasRandom = document.getElementById("canvasForRand");
-        if (htmlCanvasRandom) {
-            var offscreenCanvas = htmlCanvasRandom.transferControlToOffscreen();
-            var a = offscreenCanvas; 
-            var worker = new Worker('RandDirection.js');
-            worker.postMessage({ canvas: offscreenCanvas ,count:1000,timeForUpdate:10}, [offscreenCanvas]);
+        window.onload = function() {
+            const htmlCanvasNew = document.getElementById("canvasForRand");
+            if (htmlCanvasNew) {
+
+                let worker = new Worker('RandDirection.js');
+                worker.postMessage({
+                    canvas: offscreenCanvas,
+                    count: 1000,
+                    timeForUpdate: 10
+                }, [offscreenCanvas]);
+
+                worker.onmessage = (e) => {
+                    
+                    const x = e.data.x;
+                    const y = e.data.y;
+                    var ctx = htmlCanvasNew.getContext('2d');
+                    ctx.clearRect(x, y, 10, 10);
+                    ctx.beginPath();
+                    ctx.fillRect(X[i], i * 20, 10, 10);
+                }
+            }
+
+            const htmlCanvasRandom = document.getElementById("canvasForRand");
+            if (htmlCanvasRandom) {
+                var offscreenCanvas = htmlCanvasRandom.transferControlToOffscreen();
+                var a = offscreenCanvas;
+                var worker = new Worker('RandDirection.js');
+                worker.postMessage({
+                    canvas: offscreenCanvas,
+                    count: 1000,
+                    timeForUpdate: 10
+                }, [offscreenCanvas]);
+            }
+            const htmlCanvas = document.getElementById("canvas");
+            if (htmlCanvas) {
+                var offscreenCanvas = htmlCanvas.transferControlToOffscreen();
+                var a = offscreenCanvas;
+                var worker = new Worker('worker.js');
+                worker.postMessage({
+                    canvas: offscreenCanvas,
+                    count: 1000,
+                    timeForUpdate: 10
+                }, [offscreenCanvas]);
+            }
         }
-        var htmlCanvas = document.getElementById("canvas");
-        if (htmlCanvas) {
-            var offscreenCanvas = htmlCanvas.transferControlToOffscreen();
-            var a = offscreenCanvas; 
-            var worker = new Worker('worker.js');
-            worker.postMessage({ canvas: offscreenCanvas ,count:1000,timeForUpdate:10}, [offscreenCanvas]);
-        }
-    }
     </script>
 </head>
+
 <body>
-    <canvas height="600px" style="border: 1px solid black;" width="600px" id= "canvas"> </canvas>
-    <canvas height="600px" style="border: 1px solid black;" width="600px" id= "canvasForRand"> </canvas>
+    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvasNew"> </canvas>
+    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvas"> </canvas>
+    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvasForRand"> </canvas>
 </body>
+
 </html>
