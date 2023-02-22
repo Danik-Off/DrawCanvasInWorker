@@ -1,17 +1,20 @@
+let X;
+let Y;
 onmessage = (e) => {
-    let x = e.data.x;
-    let y = e.data.y;
+     X = e.data.x;
+     Y = e.data.y;
     let speed = e.data.speed;
     const width= e.data.width;
-    setInterval(draw,10)
+    setInterval(draw,100)
     function draw()
-    {
-        if(x>=width||x<=0)
+    {  
+         X+=speed;
+        if(X>=width||X<=0)
         {
             speed =-speed;
         }
-        x+=speed;
-        postMessage({x:x,y:y,speed:speed});
+        //console.log(X,Y);
+        postMessage({x:X,y:Y,speed:speed});
     }
   
 }
