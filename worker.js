@@ -3,7 +3,7 @@ onmessage = (evt) => {
     const canvas = evt.data.canvas;
     const count = evt.data.count;
     
-    let X = new Array(count).fill(1);
+    let X =new Array(count).fill(1);
     let dX =   new Array(count).fill(1);
     let Y =  new Array(count).fill(1);
     let dY = new Array(count).fill(1);
@@ -46,5 +46,5 @@ onmessage = (evt) => {
         setTimeout(draw,evt.data.timeForUpdate,canvas,count);
     }
     
-    // Perform some drawing using the gl context
+
   };

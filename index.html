@@ -1,71 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      canvas {
+        display: inline-block;
+        height: 20px;
+        width: 600px;
+      }
+    </style>
     <script>
-      
-        window.onload = function() {
-            const htmlCanvasNew = document.getElementById("canvasNew");
-                 //  ctxNew 
-            if (htmlCanvasNew) {
-                let  ctxNew = htmlCanvasNew.getContext('2d');
-                for (let index = 0; index <10; index++) {
-                   
-                    let worker = new Worker('workerNew.js');
-                    worker.postMessage({
-                        x:1,
-                        y:20*index,
-                        speed:1,
-                        width:htmlCanvasNew.width
-                    },);
-                    worker.onmessage = (e) => {      
-                    const x = e.data.x;
-                    const y = e.data.y;  
-                    const speed = e.data.speed;  
-                   ctxNew.clearRect(x-speed, y, 10, 10);
-                  // ctxNew.beginPath();
-                   ctxNew.fillRect(x, y, 10, 10);
-                }
-                }
-                
+      window.onload = function () {
+        for (let index = 0; index < 10; index++) {
+          const canvas = document.createElement("canvas");
+          document.body.appendChild(canvas);
+          const ctxNew = canvas.getContext("2d");
+          const worker = new Worker("workerNew.js");
+          worker.postMessage({
+            x: 1,
+            speed: 1,
+            width: canvas.width,
+          });
+          worker.onmessage = (e) => {
+            const x = e.data.x;
 
-               
-            }
-
-            const htmlCanvasRandom = document.getElementById("canvasForRand");
-            if (htmlCanvasRandom) {
-                var offscreenCanvas = htmlCanvasRandom.transferControlToOffscreen();
-                var a = offscreenCanvas;
-                var worker = new Worker('RandDirection.js');
-                worker.postMessage({
-                    canvas: offscreenCanvas,
-                    count: 1000,
-                    timeForUpdate: 10
-                }, [offscreenCanvas]);
-            }
-            const htmlCanvas = document.getElementById("canvas");
-            if (htmlCanvas) {
-                var offscreenCanvas = htmlCanvas.transferControlToOffscreen();
-                var a = offscreenCanvas;
-                var worker = new Worker('worker.js');
-                worker.postMessage({
-                    canvas: offscreenCanvas,
-                    count: 1000,
-                    timeForUpdate: 10
-                }, [offscreenCanvas]);
-            }
+            ctxNew.clearRect(0, 0, canvas.width, canvas.height);
+            ctxNew.fillRect(x, 0, 10, 100);
+            worker.postMessage(e.data);
+          };
         }
+
+        for (let index = 0; index < 10; index++) {
+          const canvas = document.createElement("canvas");
+          document.body.appendChild(canvas);
+
+          const offscreenCanvas = canvas.transferControlToOffscreen();
+          const worker = new Worker("workerNewWithOffScreen.js");
+          worker.postMessage(
+            {
+              canvas: offscreenCanvas,
+            },
+            [offscreenCanvas]
+          );
+        }
+
+        const htmlCanvasRandom = document.getElementById("canvasForRand");
+        if (htmlCanvasRandom) {
+          var offscreenCanvas = htmlCanvasRandom.transferControlToOffscreen();
+          var a = offscreenCanvas;
+          var worker = new Worker("RandDirection.js");
+          worker.postMessage(
+            {
+              canvas: offscreenCanvas,
+              count: 1000,
+              timeForUpdate: 10,
+            },
+            [offscreenCanvas]
+          );
+        }
+        const htmlCanvas = document.getElementById("canvas");
+        if (htmlCanvas) {
+          var offscreenCanvas = htmlCanvas.transferControlToOffscreen();
+          var a = offscreenCanvas;
+          var worker = new Worker("worker.js");
+          worker.postMessage(
+            {
+              canvas: offscreenCanvas,
+              count: 1000,
+              timeForUpdate: 10,
+            },
+            [offscreenCanvas]
+          );
+        }
+      };
     </script>
-</head>
+  </head>
 
-<body>
-    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvasNew"> </canvas>
-    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvas"> </canvas>
-    <canvas height="600px" style="border: 1px solid black;" width="600px" id="canvasForRand"> </canvas>
-</body>
-
+  <body>
+    <canvas
+      height="600px"
+      style="border: 1px solid black"
+      width="600px"
+      id="canvasNew"
+    >
+    </canvas>
+    <canvas
+      height="600px"
+      style="border: 1px solid black"
+      width="600px"
+      id="canvas"
+    >
+    </canvas>
+    <canvas
+      height="600px"
+      style="border: 1px solid black"
+      width="600px"
+      id="canvasForRand"
+    >
+    </canvas>
+  </body>
 </html>
